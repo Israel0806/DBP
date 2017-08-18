@@ -1,1 +1,1 @@
-Desarrollo basado en plataforma
+Desarrollo basado en plataformas
