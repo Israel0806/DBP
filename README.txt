@@ -1,1 +1,0 @@
-Desarrollo basado en plataformas
