@@ -1,0 +1,201 @@
+<html>
+ <head>
+ <script>
+
+function funcSumar(a, b) 
+{ 
+  var Cuadro = document.getElementById("resultado");
+  Cuadro.innerText= parseFloat( a.value ) + parseFloat ( b.value ) ;
+}
+
+ function funcRestar(a, b) 
+{ 
+  var Cuadro = document.getElementById("resultado");
+  Cuadro.innerText= a.value - b.value;
+}
+
+function funcMult(a, b)
+{ 
+  var Cuadro = document.getElementById("resultado");
+  Cuadro.innerText= a.value * b.value;
+}
+
+function funcDiv(a, b) 
+{ 
+  if(b.value!=0)
+  {
+    var Cuadro = document.getElementById("resultado");
+    Cuadro.innerText= a.value /b.value;
+  }
+  else
+  {
+    alert("No existe division entre 0!");
+  }
+  
+}
+
+function Calculator() {}
+
+function Operators() {}
+
+bool = new Boolean();
+
+Calculator.prototype.createButtons = function() 
+{
+  var div = document.getElementById("calc");
+  var res1 = document.getElementById("operando2");
+  var resul = document.getElementById("resultado");
+  var op1 = document.getElementById("operando1");
+  var op2 = document.getElementById("operando2");
+  
+  var cambio = document.createElement("BUTTON");
+  cambio.innerText = "<--------->";
+  cambio.onclick = function(event)
+  {
+    bool ^= true;
+  }
+  div.appendChild(cambio);
+  for (var i=0; i<10; i++) 
+  {
+    var btn = document.createElement("BUTTON");
+    btn.onclick = function(event) 
+    {
+	  if(bool==false)
+	  {
+	    op1.value  +=  this.innerText;	  
+	  }
+	  else
+	  {
+	    op2.value += this.innerText;
+	  }	
+	};
+    btn.innerHTML = i;
+    
+	div.appendChild(btn);
+  }
+  var punto = document.createElement("BUTTON");
+  
+  punto.onclick= function(event)
+  {	  
+      if(bool==false)
+	  {
+	    op1.value  +=  this.innerText;	  
+	  }
+	  else
+	  {
+	    op2.value += this.innerText;
+	  }
+}
+  punto.innerHTML = ".";
+  div.appendChild(punto)
+
+  var limpiar = document.createElement("BUTTON");
+  
+  limpiar.onclick= function(event)
+  {
+    op1.value = "0";
+	op2.value = "0";
+	resul.innerText = "0";
+	bool=false;
+  }
+  limpiar.innerHTML = "CE";
+  div.appendChild(limpiar)
+
+}
+
+Operators.prototype.createButtons2 = function() 
+{
+  var a = document.getElementById("operando1") ;
+  var b = document.getElementById("operando2") ;
+  var d = document.getElementById("operadores");
+  
+  var btn1 = document.createElement("BUTTON");
+  var btn2 = document.createElement("BUTTON");
+  var btn3 = document.createElement("BUTTON");
+  var btn4 = document.createElement("BUTTON");
+  
+  btn1.onclick = function(event) 
+    {
+		funcSumar(a,b);
+	};
+  btn2.onclick = function(event) 
+    {
+		funcRestar(a,b);
+    };
+  btn3.onclick = function(event) 
+    {
+	    funcMult(a,b);
+    };
+  btn4.onclick = function(event) 
+    {
+	    funcDiv(a,b);
+    };
+  btn1.innerHTML = "+";
+  btn2.innerHTML = "-";
+  btn3.innerHTML = "*";
+  btn4.innerHTML = "/";
+
+  d.appendChild(btn1);
+  d.appendChild(btn2);
+  d.appendChild(btn3);
+  d.appendChild(btn4);
+}
+
+
+
+function main() 
+{
+  var calc = new Calculator();
+  calc.createButtons();
+  var operators = new Operators();
+  operators.createButtons2();
+}
+ </script>
+ 
+ <style>
+.box {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+}
+
+.button {	
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+
+</style>
+ 
+ </head>
+ <body onload="main()"  style=" background-color: black;" >
+ 
+  <div style="color: white; font-size:20px;" >
+ <input type="number"; value="0"; class="box" id="operando1" />
+
+ <input type="number"; value="5"; class="box" id="operando2" />
+  
+  =
+ <input type="number"; value="0"; class="box" id="resultado" />
+ 
+  </div>
+ </br>
+ <div  id="calc" class="button" style="border: 1px white; width: 73px;"> 
+ </div>
+ </br>
+ <div id="operadores"  class="button" style="border: 1px white; height: 20; width: 90px;">
+ </div>
+ 
+ </body>
+</html>

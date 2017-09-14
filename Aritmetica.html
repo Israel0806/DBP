@@ -1,0 +1,60 @@
+<html>
+ <head>   
+    <style>
+   .cuadro {
+   color: white;
+   border: 2px dashed yellow;
+   text-align: center;
+   margin-bottom: 2px;
+   }
+   
+   .subtitulo {
+   color: white;
+   text-align: center;
+   font-size: 15pt;
+   font-family: Arial;
+   border: 1px solid lightgreen;
+   }
+   </style>
+   <script>
+   function sumar()
+   {
+    var a = parseInt("0" , document.getElementById("x") ) + "<br>";
+    var b = parseInt("0" , document.getElementById("y") ) + "<br>";
+	var resul = a + b;
+	var Cuadro = document.getElementById("cuadro");
+    Cuadro.innerText= resul.value;
+   }
+    function restar()
+   {
+    var a = document.getElementById("x");
+    var b = document.getElementById("y");
+	var resul = a.value - b.value;
+	var Cuadro = document.getElementById("cuadro");
+    Cuadro.innerText= resul.value;
+   }
+   
+   </script>
+  <title> 
+   Hola Mundo!
+  </title>
+ </head>
+ 
+ <body style=" background-color: black;">
+ 
+ <input type=text" value="5" id="x" />
+ <input type=text" value="4" id="y" />
+ <button onclick= "sumar();" > + </button>
+ <button onclick= "restar();" > - </button>
+ 
+ <div class="cuadro">
+  Resultado es:
+  </div>
+  
+  <div class="subtitulo" id="cuadro" >
+	Resul
+  </div>
+ </body>
+
+
+</html>
