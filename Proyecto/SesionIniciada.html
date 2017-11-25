@@ -75,7 +75,6 @@ function ShowUsers()
 					tabla.className = "tabla";
 					var rowUser = document.createElement("TR");
 					
-					var rowChat = document.createElement("TR");
 					var rowMessage = document.createElement("TR");
 					
 					//rowUser.innerHTML = this.innerHTML; // + "<br><hr>";
@@ -91,6 +90,7 @@ function ShowUsers()
 //					rowChat.appendChild(rowChatText);
 					
 					var rowChatDiv = document.createElement("div");
+					var rowChat = document.createElement("TABLE");
 					rowChatDiv.className = "rowChatDiv";
 					rowChatDiv.appendChild(rowChat);
 					
@@ -240,34 +240,6 @@ function ShowUsers()
 	});
 }
 
-
-/*
-function guardarAlumno() {
-  var alumno = {
-	"codigo": jQuery("#codigo").val(),
-	"apellido_paterno": jQuery("#apellido_paterno").val(),
-	"nombres":  jQuery("#nombres").val(),
-	"fecha_nacimiento":  jQuery("#fecha_nacimiento").val()
-  };
-  jQuery.ajax({method: "POST", url: "guardar-alumno.json.php", data: JSON.stringify(alumno), dataType: 'text'}).done(function( responseText ) {
-	cargarAlumnos();
-	//alert(responseText);
-  });
-}
-function editarAlumno(codigo) {
- var alumno = alumnosPorCodigo[codigo];
- jQuery("#codigo").val(alumno.codigo);
- jQuery("#apellido_paterno").val(alumno.apellido_paterno);
- jQuery("#nombres").val(alumno.nombres);
- jQuery("#fecha_nacimiento").val(alumno.fecha_nacimiento)
-}
-function eliminarAlumno(codigo) {
-  jQuery.ajax({method: "GET", url: "eliminar-alumno.json.php?codigo=" + codigo, dataType: 'text'}).done(function( responseText ) {
-	cargarAlumnos();
-	//alert(responseText);
-  });
-}
-*/
 </script>
 
 <style>
@@ -337,7 +309,7 @@ aside {
 	padding: 0 5px 100% 8px;
 	text-align:center;
 	color:white;
-	width: 200px;
+	width: 15%;
 	background-image: url("verde.jpg");
 	background-color:#8BC34A;
 	
@@ -375,7 +347,7 @@ td,p {
 table.tabla {
 	margin: 5px 5px 5px 0;
 	width: 80%;
-	height: 400px;
+	height: 500px;
 	
 }
 
@@ -395,13 +367,12 @@ table.tabla {
 
 div.rowChatDiv {
 	overflow-y: auto;
-	height: 100%;
+	height: 440px;
 
 }
 
 .rowChat {
 	width: 100%;
-	height: 440px;
 	
 }
 
