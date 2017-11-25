@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+ <meta charset="UTF-8">
+ <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+ <script>
+ 
+//var usuarioPorCodigo = {};
+
+function print()
+{
+	jQuery.ajax({method: "GET", url: "DataBase_Connection.json.php", dataType: 'text'}).done(function( responseText )
+	{
+	
+		var json = JSON.parse(responseText);
+		
+		
+		var html = "<tr><td>Codigo</td><td>Username</td><td>Password</td><td>Nombre</td><td>Apellidos</td><td>Fecha de Nacimiento</td></tr>";
+		for(var i=0;i<json.length;i++)
+		{
+			html+=  "<tr><td>" + json[i].Codigo + "</td><td>";
+			html+=  json[i].Username + "</td><td>";
+			html+=  json[i].Password + "</td><td>";
+			html+=  json[i].Nombre + "</td><td>";
+			html+=  json[i].Apellidos + "</td><td>";
+			html+=  json[i].Fecha + "</td></tr>";
+			
+//			usuarioPorCodigo[json[i].Codigo] = json[i];
+		}
+		jQuery("#usuarios").html(html);
+	});
+}
+
+function IniciarSesion()
+{
+	var usuario = {
+	"Username": jQuery("#_Username").val(),
+	"Password": jQuery("#_Password").val(),
+	};
+	jQuery.ajax({method: "POST", url: "IniciarSesion.php", data: JSON.stringify(usuario), dataType: 'text'}).done(function(responseText)
+	{
+		var bool=responseText;
+//		alert(responseText);
+//		document.write(bool);
+		if(bool==1)
+		{
+			document.cookie = "PassUser=" + encodeURIComponent(usuario.Username); path="SesionIniciada.html"; domain="SesionIniciada.html";
+			window.document.location.href = 'SesionIniciada.html';
+		}
+	});
+
+}
+
+function CrearUsuario()
+{
+	var usuario = {
+	"Codigo": jQuery("#Codigo").val(),
+	"Username": jQuery("#Username").val(),
+	"Password": jQuery("#Password").val(),
+	"Nombre": jQuery("#Nombre").val(),
+	"Apellidos": jQuery("#Apellidos").val(),
+	"Fecha": jQuery("#Fecha").val()
+	};
+	jQuery.ajax({method: "POST", url: "CrearUsuario.php", data: JSON.stringify(usuario), dataType: 'text'}).done(function(responseText)
+	{
+		print();
+	});
+}
+
+</script>
+
+<style>
+
+body {
+	background-color:#F9FFEA;
+
+}
+
+header {
+/*	background-color:#8594E4;*/
+	background-image: url("celeste.jpg");
+	text-align:center;
+	padding:8px;
+	
+	color:white;
+	font-size:50px;
+}
+
+button {
+	padding:8px;
+	color: #fff;
+	font-size: 17px;
+	text-align: center;
+	font-family: Algerian;
+	margin: 7px 3px 7px 3px;
+	background-color: #C92654;
+	//background-color: #4CAF50;
+	
+	border: none;
+	cursor: pointer;
+	border-radius: 15px;
+	text-decoration: none;
+	box-shadow: 0 3px #999;
+}
+
+button.nose {
+	font-family: Algerian;
+	
+}
+
+aside {
+	font-size:32px;
+	float: right;
+	padding: 0 5px 100% 8px;
+	text-align:center;
+	color:white;
+	background-color: #3B2D38;
+	//	background-image: url("verde.jpg");
+	//  background-color:#8BC34A;
+	
+}
+
+section {
+	font-size:20px;
+	background-color:#F9FFEA;
+	float:left;
+	padding: 0 10px 100% 8px;
+	border-right:1px  solid gray;
+	margin-right: 10px;
+}
+
+article {
+	background-color:#F9FFEA;
+	align: center;
+	padding: 0 10px 100% 5px;
+
+}
+
+tr:hover {
+	background-color: #f5f5f5;
+    margin: auto;
+} 
+
+td {
+	padding: 5px 10px 0 10px;
+	margin: auto;
+	text-align: center;
+	
+}
+
+td,p {
+	font-family:Georgia;
+	font-size:20px;
+
+}
+
+
+</style>
+
+</head>
+
+<body>
+ <!-- txt -->
+ <header>Nameless App</header>
+
+ <!-- boton: cargarUsuarios -->
+ <aside> Usuarios Conectados<br>
+	-No one by now :(<br>
+	-Looser
+ 
+ </aside>
+ 
+ 
+ <section>
+	<b style="font-size:25px;">Sign in:</b>
+	<br>
+	<!-- Impresion de tabla -->
+	
+	<table id="ingresar-usuario" >
+	<tr><td>Username:</td><td><input id="_Username" /></td></tr>
+	<tr><td>Password:</td><td><input id="_Password" /></td></tr>
+	</table>
+	<!-- Ingresar Usuario -->
+	<div  style="text-align:center;">
+	<button onclick="IniciarSesion()">Iniciar Sesion</button>
+	</div>
+	
+	<b style="font-size:25px;">Sign up:</b> 
+	<br>
+	
+	<!-- Impresion de tabla -->
+	<table id="crear-usuario" >
+	<tr><td>Username:</td><td><input id="Username" /></td></tr>
+	<tr><td>Password:</td><td><input id="Password" /></td></tr>
+	<tr><td>Nombres:</td><td><input id="Nombre" /></td></tr>
+	<tr><td>Apellidos:</td><td><input id="Apellidos" /></td></tr>
+	<tr><td>Fecha de <br>Nacimiento:</td><td><input id="Fecha" /></td></tr>
+	</table>
+	<br>
+	
+	<!-- boton despues: Guardar -->
+	<div  style="text-align:center;">
+	<button onclick="CrearUsuario()">Crear Usuario</button>
+	</div>
+ </section>
+ 
+ 
+ <article> 
+	<h2 style="text-align:center;"> I have no idea what I'm doing :D	</h2>
+	<h3>What's this Page About:</h3>
+	<p> 
+	I would like to know either, but hey, do you want to see people??, I mean users?? <br> Press The button below ;)
+	
+	</p>
+	<button class="nose" style="float:left;"onclick="print()">Mostrar Usuarios Registrados</button>
+	<br><br><br>
+	
+	<div style="overflow-x:auto;">
+	<table id="usuarios" border="1">
+	</table>
+	
+	</div>
+	<br><br>
+
+ 
+ 
+ </article>
+ 
+
+</body>
+
+</html>

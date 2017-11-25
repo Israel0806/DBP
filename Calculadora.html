@@ -76,7 +76,7 @@ Calculator.prototype.createButtons = function()
   var punto = document.createElement("BUTTON");
   
   punto.onclick= function(event)
-  {	  
+  {
       if(bool==false)
 	  {
 	    op1.value  +=  this.innerText;	  
@@ -85,7 +85,7 @@ Calculator.prototype.createButtons = function()
 	  {
 	    op2.value += this.innerText;
 	  }
-}
+  }
   punto.innerHTML = ".";
   div.appendChild(punto)
 

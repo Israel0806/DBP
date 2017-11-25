@@ -1,0 +1,524 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+ <meta charset="UTF-8">
+ <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+ <script>
+ 
+//var alumnosPorCodigo = {};
+var usuarioPorCodigo = {};
+
+function print()
+{
+	jQuery.ajax({method: "GET", url: "DataBase_Connection.json.php", dataType: 'text'}).done(function( responseText )
+	{
+	
+		var json = JSON.parse(responseText);
+		
+		
+		var html = "<tr><td>Codigo</td><td>Username</td><td>Password</td><td>Nombre</td><td>Apellidos</td><td>Fecha de Nacimiento</td></tr>";
+		for(var i=0;i<json.length;i++)
+		{
+			html+=  "<tr><td>" + json[i].Codigo + "</td><td>";
+			html+=  json[i].Username + "</td><td>";
+			html+=  json[i].Password + "</td><td>";
+			html+=  json[i].Nombre + "</td><td>";
+			html+=  json[i].Apellidos + "</td><td>";
+			html+=  json[i].Fecha + "</td></tr>";
+			
+			usuarioPorCodigo[json[i].Codigo] = json[i];
+		}
+		jQuery("#usuarios").html(html);
+	});
+}
+
+function readCookie(name) 
+{
+	var nameEQ = name + "="; 
+	var ca = document.cookie.split(';');
+
+	for(var i=0;i < ca.length;i++) 
+	{
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) 
+		{
+		  return decodeURIComponent( c.substring(nameEQ.length,c.length) );
+		}
+	}
+	return null;
+
+}
+
+function ShowUsers()
+{
+	jQuery.ajax({method: "GET", url: "ShowUser.php", dataType: 'text'}).done(function( responseText )
+	{
+		var json = JSON.parse(responseText);
+		
+		var PassedUser = readCookie("PassUser");
+		
+		for(var i=0;i<json.length;i++)
+		{
+			if(json[i].Username!=PassedUser)
+			{
+				var button = document.createElement("BUTTON");
+				button.innerHTML = json[i].Username;
+				button.codigo = i;
+				button.className  = "UsersOnline";
+				
+				button.onclick = function()
+				{
+					var output = document.getElementById("chat");
+					var tabla = document.createElement("TABLE");
+					tabla.border = "1";
+					tabla.className = "tabla";
+					var rowUser = document.createElement("TR");
+					
+					var rowChat = document.createElement("TR");
+					var rowMessage = document.createElement("TR");
+					
+					//rowUser.innerHTML = this.innerHTML; // + "<br><hr>";
+					
+					
+					var rowUserText = document.createElement("TH");
+					rowUserText.className = "rowUserText";
+					rowUserText.innerHTML = this.innerHTML;
+					rowUser.appendChild(rowUserText);
+					
+//					var rowChatText = document.createElement("TD");
+//					rowChatText.className = "rowChatText";
+//					rowChat.appendChild(rowChatText);
+					
+					var rowChatDiv = document.createElement("div");
+					rowChatDiv.className = "rowChatDiv";
+					rowChatDiv.appendChild(rowChat);
+					
+					rowUser.className = "rowUser";
+					rowChat.className = "rowChat";
+					rowMessage.className = "rowMessage";
+					
+					
+					/*var rowMessageText = document.createElement("TD");
+					rowMessageText.innerHTML = "Mensaje: ";
+					rowMessageText.className = "rowMessageText";*/
+					
+					var rowMessageInput = document.createElement("INPUT");
+					rowMessageInput.className = "rowMessageInput";
+					
+					
+					//Load all messages
+					
+					//var ColumnMessage = document.createElement("TD");
+					
+					jQuery.ajax({method: "GET", url: "LoadMessages.php", dataType: 'text'}).done(function( responseText )
+					{
+						var json = JSON.parse(responseText);
+						// EN VEZ DE DIV HAGO TD Y DENTRO Y DIV PARA ASI PODER SEGMENTAR DE MANERA CORRECTA
+						for(var i=0;i<json.length;i++)
+						{
+							var rowChatText = document.createElement("TR");
+							if(json[i].Destinatario==rowUserText.innerHTML && json[i].Remitente==PassedUser)
+							{
+								rowChatText.className = "rowChatTextRight";
+								var para = document.createElement("div");
+								para.className="Remitente";
+								para.appendChild( document.createTextNode(json[i].Fecha));
+								para.appendChild( document.createElement("br"));
+								para.appendChild( document.createTextNode(json[i].Texto));
+								
+								rowChatText.appendChild(para);
+								rowChat.appendChild(rowChatText);
+							}
+							else if(json[i].Destinatario==PassedUser && json[i].Remitente==rowUserText.innerHTML)
+							{
+								rowChatText.className = "rowChatTextLeft";
+								var para = document.createElement("div");
+								para.className="Destinatario";
+								para.appendChild( document.createTextNode(json[i].Fecha));
+								para.appendChild( document.createElement("br"));
+								para.appendChild( document.createTextNode(json[i].Texto));
+								
+								rowChatText.appendChild(para);
+								rowChat.appendChild(rowChatText);
+							}
+						}
+					});
+
+					
+					
+					rowMessageInput.onkeypress = function(e) 
+					{
+						if (e.keyCode == 13) 
+						{
+								var dt = new Date();
+								var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+								var DataMessage = {
+								"Fecha": time,
+								"Texto": rowMessageInput.value,
+								"Remitente": PassedUser,
+								"Destinatario": rowUserText.innerHTML
+								};
+								jQuery.ajax({method: "POST", url: "SubirMensaje.php", data: JSON.stringify(DataMessage), dataType: 'text'}).done(function(responseText)
+								{
+									var rowChatText = document.createElement("TR");
+									rowChatText.className = "rowChatTextRight";
+									var para = document.createElement("div");
+									para.className = "Remitente";
+									para.appendChild( document.createTextNode(time));
+									para.appendChild( document.createElement("br"));
+									para.appendChild( document.createTextNode(rowMessageInput.value));
+									
+									rowChatText.appendChild(para);
+									rowChat.appendChild(rowChatText);
+								});
+						/*	var dt = new Date();
+							var time = dt.getHours() + ":" + dt.getMinutes();
+							
+							var para = document.createElement("p");
+							
+							para.appendChild( document.createTextNode(time));
+							para.appendChild( document.createElement("br"));
+							para.appendChild( document.createTextNode(rowMessageInput.value));
+							
+							rowChatText.appendChild(para);*/
+						}
+					}
+					
+					var rowMessageButton = document.createElement("BUTTON");
+					rowMessageButton.innerHTML = "Enviar";
+					rowMessageButton.className = "rowMessageButton";
+					
+					rowMessageButton.onclick = function()
+					{
+						var dt = new Date();
+						var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
+						var DataMessage = {
+						"Fecha": time,
+						"Texto": rowMessageInput.value,
+						"Remitente": PassedUser,
+						"Destinatario": rowUserText.innerHTML
+						};
+						jQuery.ajax({method: "POST", url: "SubirMensaje.php", data: JSON.stringify(DataMessage), dataType: 'text'}).done(function(responseText)
+						{
+								var rowChatText = document.createElement("TR");
+								rowChatText.className = "rowChatTextRight";
+								var para = document.createElement("div");
+								para.className = "Remitente";
+								para.appendChild( document.createTextNode(time));
+								para.appendChild( document.createElement("br"));
+								para.appendChild( document.createTextNode(rowMessageInput.value));
+								
+								rowChatText.appendChild(para);
+								rowChat.appendChild(rowChatText);
+						});
+						
+					}
+					
+					rowMessage.appendChild(rowMessageInput);
+					rowMessage.appendChild(rowMessageButton);
+					
+					tabla.appendChild(rowUser);
+					tabla.appendChild(rowChatDiv);
+//					tabla.appendChild(rowChat);
+					tabla.appendChild(rowMessage);
+					output.innerHTML = "";
+					output.appendChild(tabla);
+				}
+				
+				var out = document.getElementById("aside");
+				var table = document.createElement("TABLE");
+				table.className = "UsersOnline";
+				var row = document.createElement("TR");
+				row.className = "UsersOnline";
+				row.appendChild(button);
+				table.appendChild(row);
+				out.appendChild(table);
+			}
+		}
+		jQuery("#UserOnline").html(table);
+	});
+}
+
+
+/*
+function guardarAlumno() {
+  var alumno = {
+	"codigo": jQuery("#codigo").val(),
+	"apellido_paterno": jQuery("#apellido_paterno").val(),
+	"nombres":  jQuery("#nombres").val(),
+	"fecha_nacimiento":  jQuery("#fecha_nacimiento").val()
+  };
+  jQuery.ajax({method: "POST", url: "guardar-alumno.json.php", data: JSON.stringify(alumno), dataType: 'text'}).done(function( responseText ) {
+	cargarAlumnos();
+	//alert(responseText);
+  });
+}
+function editarAlumno(codigo) {
+ var alumno = alumnosPorCodigo[codigo];
+ jQuery("#codigo").val(alumno.codigo);
+ jQuery("#apellido_paterno").val(alumno.apellido_paterno);
+ jQuery("#nombres").val(alumno.nombres);
+ jQuery("#fecha_nacimiento").val(alumno.fecha_nacimiento)
+}
+function eliminarAlumno(codigo) {
+  jQuery.ajax({method: "GET", url: "eliminar-alumno.json.php?codigo=" + codigo, dataType: 'text'}).done(function( responseText ) {
+	cargarAlumnos();
+	//alert(responseText);
+  });
+}
+*/
+</script>
+
+<style>
+
+body {
+	background-color:#F9FFEA;
+
+}
+
+header {
+/*	background-color:#8594E4;*/
+	background-image: url("celeste.jpg");
+	text-align:center;
+	padding:8px;
+	
+	color:white;
+	font-size:50px;
+}
+
+button {
+	padding:8px;
+	color: #fff;
+	font-size: 17px;
+	text-align: center;
+	font-family: Algerian;
+	margin: 7px 3px 7px 3px;
+	background-color: #4CAF50;
+	border-radius: 15px;
+	border: none;
+	cursor: pointer;
+	text-decoration: none;
+}
+//text-align
+//html to html cookies
+button.nose {
+	font-family: Algerian;
+	box-shadow: 0 3px #999;
+	
+}
+
+.UsersOnline:hover {
+	background-color: transparent;
+	
+}
+
+table.UsersOnline {
+	float: center;
+	width: 100%;
+
+}
+
+button.UsersOnline {
+	background-color: Transparent;
+	border: Transparent;
+	float: center;
+
+}
+
+button.UsersOnline:hover {
+	background-color: transparent;
+	
+}
+
+aside {
+	font-size:37px;
+	float: right;
+	padding: 0 5px 100% 8px;
+	text-align:center;
+	color:white;
+	width: 200px;
+	background-image: url("verde.jpg");
+	background-color:#8BC34A;
+	
+}
+
+section {
+	font-size:20px;
+	background-color:#F9FFEA;
+	float:left;
+	padding: 0 10px 100% 8px;
+	border-right:1px  solid gray;
+	margin-right: 10px;
+}
+
+article {
+	background-color:#F9FFEA;
+	align: center;
+	padding: 0 10px 100% 5px;
+
+}
+
+td {
+	padding: 5px 10px 0 10px;
+	margin: auto;
+	text-align: center;
+	
+}
+
+td,p {
+	font-family:Georgia;
+	font-size:20px;
+
+}
+
+table.tabla {
+	margin: 5px 5px 5px 0;
+	width: 80%;
+	height: 400px;
+	
+}
+
+.rowUser {
+	margin: 5px;
+	padding: 5px 0 0 5px;
+	width: 100%;
+	height: 30px;
+
+}
+
+.rowUserText {
+	width: 100%;
+	text-align:left;
+	font-size: 30px;
+}
+
+div.rowChatDiv {
+	overflow-y: auto;
+	height: 100%;
+
+}
+
+.rowChat {
+	width: 100%;
+	height: 440px;
+	
+}
+
+TR.rowChatTextLeft {
+	float: left;
+	text-align: left;
+	width: 100%;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
+
+}
+
+TR.rowChatTextRight {
+	float: right;
+	text-align: right;
+	width: 100%;
+	padding-bottom: 5px;
+	margin-bottom: 5px;
+
+}
+
+.rowMessage {
+	margin: 5px 0 5px 5px;
+	width: 100%;
+	height: 30px;
+}
+
+.rowMessageText {
+//	margin: 5px 0 5px 5px;
+	padding: 0 0 5px 0;
+	width: 15%;
+//	height: 30px;
+	border: none;
+	
+}
+
+
+.rowMessageInput {
+	margin: 5px 0 5px 5px;
+	font-size: 17px;
+	width: 82%;
+	height: 30px;
+	border: none;
+	border: 1px solid black;
+	
+}
+
+.rowMessageButton {
+//	margin: 5px 0 5px 5px;
+	width: 15%;
+//	height: 30px;
+	border: none;
+}
+
+
+div.Remitente{
+	position: relative;
+	float:right;
+	text-align: right;
+	width: 200px;
+	height: 50px;
+	padding: 15px;
+	border-radius: 5px;
+	box-shadow: 0 2px 5px #555;
+	background-color: #EEE;
+}
+
+div.Destinatario{
+	position: relative;
+	float:left;
+	text-align:left;
+	width: 200px;
+	height: 50px;
+	padding: 15px;
+	border-radius: 5px;
+	box-shadow: 0 2px 5px #555;
+	background-color: #EEE;
+}
+
+
+
+</style>
+
+</head>
+
+<body onload="ShowUsers()">
+ <!-- txt -->
+ <header>WhatsApp Bamba</header>
+
+ <!-- boton: cargarUsuarios -->
+ <aside id="aside"> Usuarios <br> Conectados<br>
+	<table class="UsersOnline"; id="UserOnline">  </table>
+ 
+ </aside>
+ 
+ <article id="chat">
+	<h2 style="text-align:center;"> You got in Fam	</h2>
+	<h3>What's this Page About:</h3>
+	<p> 
+	I would like to know either, but hey, do you want to see people??, I mean users?? <br> Press The button below ;)
+	
+	</p>
+	<button class="nose"; style="float:left; "onclick="print()">Mostrar Usuarios Registrados</button>
+	<br><br><br>
+	
+	<div style="overflow-x:auto;">
+	<table id="usuarios" border="1">
+	</table>
+	
+	</div>
+	<br><br>
+
+ 
+ 
+ </article>
+ 
+
+</body>
+
+</html>
