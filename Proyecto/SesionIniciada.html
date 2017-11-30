@@ -73,6 +73,7 @@ function ShowUsers()
 					var tabla = document.createElement("TABLE");
 					tabla.border = "1";
 					tabla.className = "tabla";
+//					tabla.style.maxHeight="500px";
 					var rowUser = document.createElement("TR");
 					
 					var rowMessage = document.createElement("TR");
@@ -89,10 +90,10 @@ function ShowUsers()
 //					rowChatText.className = "rowChatText";
 //					rowChat.appendChild(rowChatText);
 					
+					var rowChat = document.createElement("TR");
 					var rowChatDiv = document.createElement("div");
-					var rowChat = document.createElement("TABLE");
 					rowChatDiv.className = "rowChatDiv";
-					rowChatDiv.appendChild(rowChat);
+					rowChat.appendChild(rowChatDiv);
 					
 					rowUser.className = "rowUser";
 					rowChat.className = "rowChat";
@@ -128,7 +129,7 @@ function ShowUsers()
 								para.appendChild( document.createTextNode(json[i].Texto));
 								
 								rowChatText.appendChild(para);
-								rowChat.appendChild(rowChatText);
+								rowChatDiv.appendChild(rowChatText);
 							}
 							else if(json[i].Destinatario==PassedUser && json[i].Remitente==rowUserText.innerHTML)
 							{
@@ -140,7 +141,7 @@ function ShowUsers()
 								para.appendChild( document.createTextNode(json[i].Texto));
 								
 								rowChatText.appendChild(para);
-								rowChat.appendChild(rowChatText);
+								rowChatDiv.appendChild(rowChatText);
 							}
 						}
 					});
@@ -170,7 +171,7 @@ function ShowUsers()
 									para.appendChild( document.createTextNode(rowMessageInput.value));
 									
 									rowChatText.appendChild(para);
-									rowChat.appendChild(rowChatText);
+									rowChatDiv.appendChild(rowChatText);
 								});
 						/*	var dt = new Date();
 							var time = dt.getHours() + ":" + dt.getMinutes();
@@ -219,8 +220,7 @@ function ShowUsers()
 					rowMessage.appendChild(rowMessageButton);
 					
 					tabla.appendChild(rowUser);
-					tabla.appendChild(rowChatDiv);
-//					tabla.appendChild(rowChat);
+					tabla.appendChild(rowChat);
 					tabla.appendChild(rowMessage);
 					output.innerHTML = "";
 					output.appendChild(tabla);
@@ -239,6 +239,12 @@ function ShowUsers()
 		jQuery("#UserOnline").html(table);
 	});
 }
+
+function CerrarSesion()
+{
+	window.document.location.href = 'Inicio.html';
+}
+
 
 </script>
 
@@ -322,6 +328,7 @@ section {
 	padding: 0 10px 100% 8px;
 	border-right:1px  solid gray;
 	margin-right: 10px;
+
 }
 
 article {
@@ -345,9 +352,9 @@ td,p {
 }
 
 table.tabla {
-	margin: 5px 5px 5px 0;
+	margin: 5px 5px 5px 20px;
 	width: 80%;
-	height: 500px;
+	height: 600px;
 	
 }
 
@@ -366,8 +373,8 @@ table.tabla {
 }
 
 div.rowChatDiv {
+	height: 540px;
 	overflow-y: auto;
-	height: 440px;
 
 }
 
@@ -433,11 +440,12 @@ div.Remitente{
 	float:right;
 	text-align: right;
 	width: 200px;
-	height: 50px;
+	height: auto;
 	padding: 15px;
 	border-radius: 5px;
 	box-shadow: 0 2px 5px #555;
 	background-color: #EEE;
+
 }
 
 div.Destinatario{
@@ -445,11 +453,12 @@ div.Destinatario{
 	float:left;
 	text-align:left;
 	width: 200px;
-	height: 50px;
+	height: auto;
 	padding: 15px;
 	border-radius: 5px;
 	box-shadow: 0 2px 5px #555;
 	background-color: #EEE;
+
 }
 
 
@@ -459,8 +468,19 @@ div.Destinatario{
 </head>
 
 <body onload="ShowUsers()">
- <!-- txt -->
- <header>WhatsApp Bamba</header>
+ <header>
+	<table width="100%">
+		<tr width="100%">
+			<th width="90%">
+			WhatsApp Bamba
+			</th>
+			<td width="10%">
+			<button onclick="CerrarSesion()">Cerrar Sesion </button>
+			</td>
+		</tr>
+	</table>
+ 
+ </header>
 
  <!-- boton: cargarUsuarios -->
  <aside id="aside"> Usuarios <br> Conectados<br>

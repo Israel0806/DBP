@@ -11,7 +11,6 @@ function print()
 {
 	jQuery.ajax({method: "GET", url: "DataBase_Connection.json.php", dataType: 'text'}).done(function( responseText )
 	{
-	
 		var json = JSON.parse(responseText);
 		
 		
@@ -33,38 +32,77 @@ function print()
 
 function IniciarSesion()
 {
-	var usuario = {
-	"Username": jQuery("#_Username").val(),
-	"Password": jQuery("#_Password").val(),
-	};
-	jQuery.ajax({method: "POST", url: "IniciarSesion.php", data: JSON.stringify(usuario), dataType: 'text'}).done(function(responseText)
+	if( jQuery("#_Username").val()=="" || jQuery("#_Password").val()=="" )
 	{
-		var bool=responseText;
-//		alert(responseText);
-//		document.write(bool);
-		if(bool==1)
+		alert("oe chochera, llena todo pe");
+	}
+	else
+	{
+		var usuario = {
+		"Username": jQuery("#_Username").val(),
+		"Password": jQuery("#_Password").val(),
+		};
+		jQuery.ajax({method: "POST", url: "IniciarSesion.php", data: JSON.stringify(usuario), dataType: 'text'}).done(function(responseText)
 		{
-			document.cookie = "PassUser=" + encodeURIComponent(usuario.Username); path="SesionIniciada.html"; domain="SesionIniciada.html";
-			window.document.location.href = 'SesionIniciada.html';
-		}
-	});
-
+			var bool=responseText;
+	//		alert(responseText);
+	//		document.write(bool);
+			if(bool==1)
+			{
+				document.cookie = "PassUser=" + encodeURIComponent(usuario.Username); path="SesionIniciada.html"; domain="SesionIniciada.html";
+				window.document.location.href = 'SesionIniciada.html';
+			}
+		});
+	}
 }
+
+function VerifyUser(e)
+{
+	if (e.keyCode == 13) 
+	{
+		IniciarSesion();
+	}
+}
+
+function CreateUser(e)
+{
+	if (e.keyCode == 13) 
+	{
+		CrearUsuario();
+	}
+}
+
+/*	$(document).keypress(function(event){
+	if (event.keyCode == 13)
+	{
+		IniciarSesion();
+	}
+	});
+	*/
 
 function CrearUsuario()
 {
-	var usuario = {
-	"Codigo": jQuery("#Codigo").val(),
-	"Username": jQuery("#Username").val(),
-	"Password": jQuery("#Password").val(),
-	"Nombre": jQuery("#Nombre").val(),
-	"Apellidos": jQuery("#Apellidos").val(),
-	"Fecha": jQuery("#Fecha").val()
-	};
-	jQuery.ajax({method: "POST", url: "CrearUsuario.php", data: JSON.stringify(usuario), dataType: 'text'}).done(function(responseText)
+	if( jQuery("#Codigo").val()=="" || jQuery("#Username").val()=="" ||
+		jQuery("#Password").val()=="" || jQuery("#Nombre").val()=="" ||
+		jQuery("#Apellidos").val()=="" || jQuery("#Fecha").val()=="")
 	{
-		print();
-	});
+		alert("oe chochera, llena todo pe");
+	}
+	else
+	{
+		var usuario = {
+		"Codigo": jQuery("#Codigo").val(),
+		"Username": jQuery("#Username").val(),
+		"Password": jQuery("#Password").val(),
+		"Nombre": jQuery("#Nombre").val(),
+		"Apellidos": jQuery("#Apellidos").val(),
+		"Fecha": jQuery("#Fecha").val()
+		};
+		jQuery.ajax({method: "POST", url: "CrearUsuario.php", data: JSON.stringify(usuario), dataType: 'text'}).done(function(responseText)
+		{
+			print();
+		});
+	}
 }
 
 </script>
@@ -177,8 +215,8 @@ td,p {
 	<!-- Impresion de tabla -->
 	
 	<table id="ingresar-usuario" >
-	<tr><td>Username:</td><td><input id="_Username" /></td></tr>
-	<tr><td>Password:</td><td><input id="_Password" /></td></tr>
+	<tr><td>Username:</td><td><input onkeypress="return VerifyUser(event)" id="_Username" /></td></tr>
+	<tr><td>Password:</td><td><input onkeypress="return VerifyUser(event)" id="_Password" /></td></tr>
 	</table>
 	<!-- Ingresar Usuario -->
 	<div  style="text-align:center;">
@@ -190,11 +228,11 @@ td,p {
 	
 	<!-- Impresion de tabla -->
 	<table id="crear-usuario" >
-	<tr><td>Username:</td><td><input id="Username" /></td></tr>
-	<tr><td>Password:</td><td><input id="Password" /></td></tr>
-	<tr><td>Nombres:</td><td><input id="Nombre" /></td></tr>
-	<tr><td>Apellidos:</td><td><input id="Apellidos" /></td></tr>
-	<tr><td>Fecha de <br>Nacimiento:</td><td><input id="Fecha" /></td></tr>
+	<tr><td>Username:</td><td><input 				onkeypress="return CreateUser(event)" id="Username" /></td></tr>
+	<tr><td>Password:</td><td><input 				onkeypress="return CreateUser(event)" id="Password" /></td></tr>
+	<tr><td>Nombres:</td><td><input 				onkeypress="return CreateUser(event)" id="Nombre" /></td></tr>
+	<tr><td>Apellidos:</td><td><input 				onkeypress="return CreateUser(event)" id="Apellidos" /></td></tr>
+	<tr><td>Fecha de <br>Nacimiento:</td><td><input onkeypress="return CreateUser(event)" id="Fecha" /></td></tr>
 	</table>
 	<br>
 	
